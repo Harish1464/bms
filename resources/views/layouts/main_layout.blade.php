@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{asset('assets/css/bootstrap.min.css')}}" rel="stylesheet">
     <script src="{{asset('assets/js/jquery.min.js')}}"></script>
     <script src="{{asset('assets/js/bootstrap.min.js')}}"></script>
-    <title>Document</title>
+    <title>BMS | @yield('title')</title>
 </head>
 <body>
 <div class="container">

@@ -1,4 +1,6 @@
 @extends('layouts.main_layout')
+@section('title'){{"Clients"}}@endsection
+
 @section('main-content')
     <div class="row d-flex justify-content-center">
         <div class="row mt-5">
