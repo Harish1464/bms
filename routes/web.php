@@ -14,10 +14,11 @@ use App\Http\Controllers\ClientController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
+Route::get('/', [ClientController::class, 'index']);
 Route::get('/clients', [ClientController::class, 'index'])->name('client.index');
 Route::get('/client/add', [ClientController::class, 'create'])->name('client.create');
 Route::post('/client/store', [ClientController::class, 'store'])->name('client.store');
