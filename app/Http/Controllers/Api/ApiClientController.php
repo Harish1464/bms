@@ -24,9 +24,11 @@ class ApiClientController extends Controller
             }
             fclose($open);
         }
-        $data['clients'] = $this->paginate($clients);
-        $data['clients']->setPath('/clients');
-        return response()->json([$data, 'Clients fetched.']);
+        return response()->json([
+             'status_code'=>200,
+            "message" => "Client List",
+            "data" => $clients
+        ]);
     }
 
 
@@ -34,7 +36,7 @@ class ApiClientController extends Controller
 
      public function store(Request $request)
     {
-        $validatedData = $request->validate(
+        $validatedData = Validator::make($request->all(),
             [
             'name' => 'required|string|max:100',
             'email' => 'required|email|max:100',
@@ -47,38 +49,38 @@ class ApiClientController extends Controller
             'mode_of_contact' => 'required|string|max:20',
             ]
         );
+
         if($validatedData->fails()){
                                 return response()->json([
                                     'status_code'=>400,
                                     'message'=>$validator->errors(),
                                     'data'=>[]
                                 ]);     
+        }else{
+            $file_open = fopen('client_data.csv', "a");
+            $no_of_rows = count(file('client_data.csv'));
+            
+            if ($no_of_rows > 1) {
+                $no_of_rows = ($no_of_rows - 1) + 1;
+            }
+            $form_data = array(
+                'id'  => $no_of_rows,
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'gender' => $request->gender,
+                'address' => $request->address,
+                'dob' => $request->dob,
+                'nationality' => $request->nationality,
+                'education_background' => $request->education_background,
+                'mode_of_contact' => $request->mode_of_contact,
+            );
+            $success = fputcsv($file_open, $form_data);
+            return response()->json([
+                                        'status_code'=>200,
+                                        'message'=>'Client registered successfully.',
+                                         $form_data
+                                    ]);
         }
-
-        $file_open = fopen('client_data.csv', "a");
-        $no_of_rows = count(file('client_data.csv'));
-        
-        if ($no_of_rows > 1) {
-            $no_of_rows = ($no_of_rows - 1) + 1;
-        }
-        $form_data = array(
-            'id'  => $no_of_rows,
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'gender' => $request->gender,
-            'address' => $request->address,
-            'dob' => $request->dob,
-            'nationality' => $request->nationality,
-            'education_background' => $request->education_background,
-            'mode_of_contact' => $request->mode_of_contact,
-        );
-        $success = fputcsv($file_open, $form_data);
-        return response()->json(['Client registered successfully.', $form_data]);
-        return response()->json([
-                                    'status_code'=>200,
-                                    'message'=>'Client registered successfully.',
-                                     $form_data
-                                ]);
     }
 }
